@@ -151,7 +151,11 @@ func (conn *Connection) Value(name string) (value string) { /*{{{*/
 	for i, _ := range list {
 		symbol := list[i]
 		if len(symbol.FullName) >= len(name) && symbol.FullName == name {
-			logger.Debug("Found value ", symbol.FullName)
+			rr, err := conn.Read(symbol.Area, symbol.Offset, symbol.Length)
+			if err == nil {
+				symbol.Value = rr.Data[0]
+			}
+			logger.Debug("Found value ", symbol.Value)
 			return symbol.Value
 			break
 		} else {
