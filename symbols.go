@@ -352,6 +352,7 @@ func (conn *Connection) addSymbol(symbol ADSSymbolUploadSymbol) { /*{{{*/
 	sym.DataType = symbol.DataType
 	sym.Comment = symbol.Comment
 	sym.Length = symbol.Length
+	sym.Value = symbol.Value
 
 	sym.Area = symbol.Area
 	sym.Offset = symbol.Offset
@@ -567,13 +568,7 @@ func (symbol *ADSSymbol) Write(value string) (error) { /*{{{*/
 
 			v8 := int8(v)
 			binary.Write(buf,binary.LittleEndian, &v8 )
-		case "INT":
-			v,e := strconv.ParseInt(value,10,16)
-			if e!=nil { return e }
-
-			v16 := int16(v)
-			binary.Write(buf,binary.LittleEndian, &v16 )
-		case "INT16":
+		case "INT","INT16":
 			v,e := strconv.ParseInt(value,10,16)
 			if e!=nil { return e }
 
@@ -682,13 +677,7 @@ func (dt *ADSSymbol) parse(offset uint32, data []byte) { /*{{{*/
 			if stop-start != 4 {return}
 			i := binary.LittleEndian.Uint32(data[start:stop])
 			newValue = strconv.FormatUint(uint64(i), 10)
-		case "INT":
-			if stop-start != 2 {return}
-			buf := bytes.NewBuffer(data[start:stop])
-			var i int16
-			binary.Read(buf, binary.LittleEndian, &i)
-			newValue = strconv.FormatInt(int64(i), 10)
-		case "INT16":
+		case "INT","INT16":
 			if stop-start != 2 {return}
 			buf := bytes.NewBuffer(data[start:stop])
 			var i int16
@@ -740,12 +729,11 @@ func (dt *ADSSymbol) parse(offset uint32, data []byte) { /*{{{*/
 			newValue = "nil"
 		}
 		dt.Value = newValue
+		dt.Valid = true
         if strcmp(dt.Value,newValue)!=0 {
 			//dt.Value = newValue
 			dt.Changed = dt.Valid
-        }
-
-		dt.Valid = true
+        }		
     }
 }
 func strcmp(a, b string) int {
