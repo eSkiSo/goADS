@@ -352,7 +352,6 @@ func (conn *Connection) addSymbol(symbol ADSSymbolUploadSymbol) { /*{{{*/
 	sym.DataType = symbol.DataType
 	sym.Comment = symbol.Comment
 	sym.Length = symbol.Length
-	sym.Value = symbol.Value
 
 	sym.Area = symbol.Area
 	sym.Offset = symbol.Offset
