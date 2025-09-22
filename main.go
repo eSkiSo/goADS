@@ -67,7 +67,7 @@ func NewConnection(ip string, netid string, port uint16) (conn *Connection, err 
 func (conn *Connection) Connect() {
 	var err error
 
-	logger.Infof("Dailing ip: %s NetID: %s", conn.ip, conn.netid)
+	logger.Infof("Connectando a ip: %s NetID: %s", conn.ip, conn.netid)
 	conn.connection, err = net.Dial("tcp", fmt.Sprintf("%s:48898", conn.ip))
 	//conn.connection, err = net.Dial("tcp", fmt.Sprintf("%s:6666",ip))
 	if err != nil {
