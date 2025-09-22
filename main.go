@@ -136,6 +136,7 @@ func (conn *Connection) Find(name string) (list []*ADSSymbol) { /*{{{*/
 			found := symbol.Self.Find(name)
 			for i, _ := range found {
 				item := found[i]
+				logger.Debug("Item ", item.FullName, ' Value: ', item.Value)
 				list = append(list, item)
 			}
 		}
