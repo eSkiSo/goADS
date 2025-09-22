@@ -573,6 +573,12 @@ func (symbol *ADSSymbol) Write(value string) (error) { /*{{{*/
 
 			v16 := int16(v)
 			binary.Write(buf,binary.LittleEndian, &v16 )
+		case "INT16":
+			v,e := strconv.ParseInt(value,10,16)
+			if e!=nil { return e }
+
+			v16 := int16(v)
+			binary.Write(buf,binary.LittleEndian, &v16 )
 		case "DINT":
 			v,e := strconv.ParseInt(value,10,32)
 			if e!=nil { return e }
