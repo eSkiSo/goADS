@@ -728,10 +728,9 @@ func (dt *ADSSymbol) parse(offset uint32, data []byte) { /*{{{*/
 		default:
 			newValue = "nil"
 		}
-		dt.Value = newValue
 		dt.Valid = true
         if strcmp(dt.Value,newValue)!=0 {
-			//dt.Value = newValue
+			dt.Value = newValue
 			dt.Changed = dt.Valid
         }		
     }
