@@ -153,7 +153,7 @@ func (conn *Connection) Value(name string) (value string) { /*{{{*/
 		if len(symbol.FullName) >= len(name) && symbol.FullName == name {
 			rr, err := conn.Read(symbol.Area, symbol.Offset, symbol.Length)
 			if err == nil {
-				symbol.Value = rr.Data[0]
+				symbol.Value = string(rr.Data[0])
 			}
 			logger.Debug("Found value ", symbol.Value)
 			return symbol.Value
