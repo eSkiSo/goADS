@@ -78,7 +78,7 @@ func (conn *Connection) decode(in []byte) (command uint16,length uint32,invoke u
         return
     }
 
-/*
+    /*
     header := buf.Bytes()
     fmt.Println("Len: ",header[2:6])
     fmt.Println("Target netid: ",header[6:12])
