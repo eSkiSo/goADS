@@ -49,7 +49,7 @@ type AMSAddress struct {
 var buf [1024000]byte
 
 // Connection
-func NewConnection(ip string, netid string, port uint16) (conn *Connection, err error) { /*{{{*/
+func NewConnection(ip string, netid string, port uint16) (conn *Connection, err error) { 
 	defer logger.Flush()
 
 	conn = &Connection{ip: ip, netid: netid, port: port}
@@ -89,8 +89,9 @@ func (conn *Connection) Connect() {
 	go transmitWorker(conn)
 
 	return
-} /*}}}*/
-func (conn *Connection) Close() { /*{{{*/
+} 
+
+func (conn *Connection) Close() { 
 	logger.Critical("CLOSE is called")
 
 	if conn.shutdown != nil {
@@ -112,16 +113,18 @@ func (conn *Connection) Close() { /*{{{*/
 	}
 
 	logger.Critical("Close DONE")
-} /*}}}*/
-func (conn *Connection) Wait() { /*{{{*/
+} 
+
+func (conn *Connection) Wait() { 
 	logger.Debug("Waiting for everything to close")
 
 	conn.WaitGroup.Wait()
 	conn.WaitGroupFinal.Wait()
 
 	logger.Info("All routines are closed")
-} /*}}}*/
-func (conn *Connection) Find(name string) (list []*ADSSymbol) { /*{{{*/
+} 
+
+func (conn *Connection) Find(name string) (list []*ADSSymbol) { 
 	logger.Debug("Find: ", name)
 
 	if conn == nil {
@@ -140,11 +143,11 @@ func (conn *Connection) Find(name string) (list []*ADSSymbol) { /*{{{*/
 			}
 		}
 	}
-
 	logger.Debug("Found ", len(list), " tags")
 	return
-} /*}}}*/
-func (conn *Connection) Value(name string) (value string) { /*{{{*/
+} 
+
+func (conn *Connection) Value(name string) (value string) { 
 	logger.Debug("Value: ", name)
 
 	list := conn.Find(name)
@@ -162,10 +165,10 @@ func (conn *Connection) Value(name string) (value string) { /*{{{*/
 			logger.Debug("Not ", symbol.FullName)
 		}
 	}
-
 	return
-} /*}}}*/
-func (conn *Connection) Set(name, value string) { /*{{{*/
+} 
+
+func (conn *Connection) Set(name, value string) { 
 	logger.Debug("Set: ", name, "=", value)
 
 	if conn == nil {
@@ -187,10 +190,9 @@ func (conn *Connection) Set(name, value string) { /*{{{*/
 			return
 		}
 	}
+} 
 
-} /*}}}*/
-
-func (conn *Connection) sendRequest(command uint16, data []byte) (response []byte, err error) { /*{{{*/
+func (conn *Connection) sendRequest(command uint16, data []byte) (response []byte, err error) { 
 	if conn == nil {
 		logger.Error("Failed to encode header, connection is nil pointer")
 		return
@@ -226,10 +228,10 @@ func (conn *Connection) sendRequest(command uint16, data []byte) (response []byt
 		logger.Info("sendRequest aborted due to shutdown")
 		return response, errors.New("Request aborted, shutdown initiated")
 	}
-
 	return
-} /*}}}*/
-func (conn *Connection) createNotificationWorker(data []byte, callback func([]byte)) (handle uint32, err error) { /*{{{*/
+} 
+
+func (conn *Connection) createNotificationWorker(data []byte, callback func([]byte)) (handle uint32, err error) { 
 	conn.WaitGroup.Add(1)
 	defer conn.WaitGroup.Done()
 
@@ -292,10 +294,10 @@ func (conn *Connection) createNotificationWorker(data []byte, callback func([]by
 		logger.Debug("Aborted createNotificationWorker")
 		return handle, errors.New("Request aborted, shutdown initiated")
 	}
-
 	return
-} /*}}}*/
-func listen(conn *Connection) <-chan []byte { /*{{{*/
+} 
+
+func listen(conn *Connection) <-chan []byte { 
 	c := make(chan []byte)
 
 	go func(conn *Connection) {
@@ -319,12 +321,11 @@ func listen(conn *Connection) <-chan []byte { /*{{{*/
 			}
 		}
 	}(conn)
-
 	return c
-} /*}}}*/
+} 
 
 // Helpers
-func stringToNetId(source string) (result AMSAddress) { /*{{{*/
+func stringToNetId(source string) (result AMSAddress) { 
 	localhost_split := strings.Split(source, ".")
 
 	for i, a := range localhost_split {
@@ -332,18 +333,19 @@ func stringToNetId(source string) (result AMSAddress) { /*{{{*/
 		result.netid[i] = byte(value)
 	}
 	return
-} /*}}}*/
-func (conn *Connection) getNewInvokeId() uint32 { /*{{{*/
+} 
+
+func (conn *Connection) getNewInvokeId() uint32 { 
 	conn.invokeIDmutex.Lock()
 	conn.invokeID++
 	id := conn.invokeID
 	conn.invokeIDmutex.Unlock()
 
 	return id
-} /*}}}*/
+} 
 
 // Workers
-func reciveWorker(conn *Connection) { /*{{{*/
+func reciveWorker(conn *Connection) { 
 	conn.WaitGroupFinal.Add(1)
 	defer conn.WaitGroupFinal.Done()
 
@@ -416,9 +418,9 @@ loop:
 			break loop
 		}
 	}
+} 
 
-} /*}}}*/
-func transmitWorker(conn *Connection) { /*{{{*/
+func transmitWorker(conn *Connection) { 
 	conn.WaitGroupFinal.Add(1)
 	defer conn.WaitGroupFinal.Done()
 
@@ -434,4 +436,4 @@ loop:
 		}
 	}
 
-} /*}}}*/
+} 
