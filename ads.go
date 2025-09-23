@@ -13,14 +13,15 @@ type ADSNotification struct {
 	handle uint32
 }
 
-// ReadDeviceInfo				- ADS command id: 1/*{{{*/
+// ReadDeviceInfo				- ADS command id: 1
 type ADSReadDeviceInfo struct {
     MajorVersion uint8
     MinorVersion uint8
     BuildVersion uint16
     DeviceName string
 }
-func (conn *Connection) ReadDeviceInfo() (response ADSReadDeviceInfo, err error) {/*{{{*/
+
+func (conn *Connection) ReadDeviceInfo() (response ADSReadDeviceInfo, err error) {
     var resp []byte
 
     // Try to send the request
@@ -53,13 +54,14 @@ func (conn *Connection) ReadDeviceInfo() (response ADSReadDeviceInfo, err error)
     logger.Debugf("response.deviceName=%s",response.DeviceName);
 
     return
-}/*}}}*/
-/*}}}*/
-// Read							- ADS command id: 2/*{{{*/
+}
+
+// Read							- ADS command id: 2
 type ADSRead struct {
     Data []byte
 }
-func (conn *Connection) Read(group uint32,offset uint32,length uint32) (response ADSRead, err error) {/*{{{*/
+
+func (conn *Connection) Read(group uint32,offset uint32,length uint32) (response ADSRead, err error) {
     request := new(bytes.Buffer)
     var content = []interface{}{
         group,
@@ -96,9 +98,9 @@ func (conn *Connection) Read(group uint32,offset uint32,length uint32) (response
     //logger.Debugf("The read data at %d:%d: \r\n%s",group,offset,hex.Dump(response.Data))
 
     return
-}/*}}}*/
-/*}}}*/
-// Write						- ADS command id: 3/*{{{*/
+}
+
+// Write						- ADS command id: 3
 func (conn *Connection) Write(group uint32,offset uint32,data []byte) {
 	if conn==nil {
 		logger.Error("Failed to Write, connection is nil pointer");
@@ -141,13 +143,14 @@ func (conn *Connection) Write(group uint32,offset uint32,data []byte) {
 
     return
 }
-/*}}}*/
-// ReadState					- ADS command id: 4/*{{{*/
+
+// ReadState					- ADS command id: 4
 type ADSReadState struct {
     ADSState uint16
     ADSDeviceState uint16
 }
-func (conn *Connection) ReadState() (response ADSReadState, err error) {/*{{{*/
+
+func (conn *Connection) ReadState() (response ADSReadState, err error) {
     var resp []byte
 
     // Try to send the request
@@ -176,13 +179,13 @@ func (conn *Connection) ReadState() (response ADSReadState, err error) {/*{{{*/
     logger.Debugf("response.ADSDeviceState=%d",response.ADSDeviceState);
 
     return
-}/*}}}*/
-/*}}}*/
-// WriteControl TODO			- ADS command id: 5/*{{{*/
+}
+
+// WriteControl TODO			- ADS command id: 5
 func (conn *Connection) WriteControl() {
 }
-/*}}}*/
-// AddDeviceNotification		- ADS command id: 6/*{{{*/
+
+// AddDeviceNotification		- ADS command id: 6
 const (
 	ADS_NoTransmission	= 0
 	ADS_ClientCycle		= 1
@@ -191,10 +194,12 @@ const (
 	ADS_ServerOnChange	= 4
 	ADS_Client1Reqest	= 5
 )
+
 type ADSAddDeviceNotification struct {
     Handle uint32
 }
-func (conn *Connection) AddDeviceNotification(group uint32,offset uint32,length uint32,transmissionMode uint32, maxDelay uint32, cycleTime uint32,callback func([]byte)) (response ADSAddDeviceNotification, err error) {/*{{{*/
+
+func (conn *Connection) AddDeviceNotification(group uint32,offset uint32,length uint32,transmissionMode uint32, maxDelay uint32, cycleTime uint32,callback func([]byte)) (response ADSAddDeviceNotification, err error) {
     request := new(bytes.Buffer)
 	reserved := make([]byte,16)
     var content = []interface{}{
@@ -226,10 +231,10 @@ func (conn *Connection) AddDeviceNotification(group uint32,offset uint32,length 
 	logger.Debug("Added notification handler: ",handle)
 
     return
-}/*}}}*/
-/*}}}*/
-// DeleteDeviceNotification		- ADS command id: 7/*{{{*/
-func (conn *Connection) DeleteDeviceNotification(handle uint32) {/*{{{*/
+}
+
+// DeleteDeviceNotification		- ADS command id: 7
+func (conn *Connection) DeleteDeviceNotification(handle uint32) {
     request := new(bytes.Buffer)
     var content = []interface{}{
         handle,
@@ -254,11 +259,10 @@ func (conn *Connection) DeleteDeviceNotification(handle uint32) {/*{{{*/
         err = errors.New("Got ADS error number "+strconv.FormatUint(uint64(result),10)+" in DeleteDeviceNotification")
         return
     }
-
     return
-}/*}}}*/
-/*}}}*/
-// DeviceNotification			- ADS command id: 8/*{{{*/
+}
+
+// DeviceNotification			- ADS command id: 8
 func (conn *Connection) DeviceNotification(in []byte) {
 	type ADSNotificationStream struct {
 		Length		uint32
@@ -307,12 +311,7 @@ func (conn *Connection) DeviceNotification(in []byte) {
 			}
 		}
 	}
-
-
-
 }
-/*}}}*/
-// ReadWrite TODO				- ADS command id: 9/*{{{*/
+// ReadWrite TODO - ADS command id: 9
 func (conn *Connection) ReadWrite() {
 }
-/*}}}*/
