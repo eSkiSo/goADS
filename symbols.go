@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-type ADSSymbolUploadSymbol struct { /*{{{*/
+type ADSSymbolUploadSymbol struct { 
 	conn *Connection
 
 	Name     string
@@ -27,8 +27,8 @@ type ADSSymbolUploadSymbol struct { /*{{{*/
 	Extra2 uint32
 
 	Childs map[string]ADSSymbolUploadDataType
-}                                     /*}}}*/
-type ADSSymbolUploadDataType struct { /*{{{*/
+}                                     
+type ADSSymbolUploadDataType struct { 
 	conn *Connection
 
 	Name        string
@@ -50,8 +50,8 @@ type ADSSymbolUploadDataType struct { /*{{{*/
 	In7         uint32
 	ArrayLevels uint16
 	In8         uint16
-}                                 /*}}}*/
-type ADSSymbol struct { /*{{{*/
+}                                 
+type ADSSymbol struct { 
 	conn *Connection
 
 	Self		*ADSSymbol
@@ -69,15 +69,15 @@ type ADSSymbol struct { /*{{{*/
     Changed     bool
 
 	Childs      map[string]ADSSymbol
-}                                 /*}}}*/
-type ADSSymbolUploadInfo struct { /*{{{*/
+}                                 
+type ADSSymbolUploadInfo struct { 
 	SymbolCount    uint32
 	SymbolLength   uint32
 	DataTypeCount  uint32
 	DataTypeLength uint32
 	ExtraCount     uint32
 	ExtraLength    uint32
-} /*}}}*/
+} 
 
 func (conn *Connection) UploadSymbolInfo() (symbols map[string]ADSSymbol, structs map[string]ADSSymbolUploadDataType) {
 	log.Debug("Start UploadSymbolInfo")
@@ -103,7 +103,7 @@ func (conn *Connection) UploadSymbolInfo() (symbols map[string]ADSSymbol, struct
 	return conn.symbols, conn.datatypes
 }
 
-func (conn *Connection) UploadSymbolInfoSymbols(length uint32) { /*{{{*/
+func (conn *Connection) UploadSymbolInfoSymbols(length uint32) { 
 
 	// Make a read at 
 	res, e := conn.Read(61451, 0, length)
@@ -165,8 +165,9 @@ func (conn *Connection) UploadSymbolInfoSymbols(length uint32) { /*{{{*/
 
 		//log.Warn(hex.Dump(header));
 	}
-}                                                                  /*}}}*/
-func (conn *Connection) UploadSymbolInfoDataTypes(length uint32) { /*{{{*/
+}
+
+func (conn *Connection) UploadSymbolInfoDataTypes(length uint32) { 
 
 	// Make a read at 
 	res, e := conn.Read(61454, 0, length)
@@ -197,14 +198,14 @@ func (conn *Connection) UploadSymbolInfoDataTypes(length uint32) { /*{{{*/
 		conn.datatypes[header.Name] = header
 	}
 	//   log.Warn(hex.Dump(header));
-}                                                                                                     /*}}}*/
-
+}                                                                                                     
 
 type arrayInfo struct {
 	Start uint32
 	Length uint32
 }
-func decodeSymbolUploadDataType(data *bytes.Buffer, parent string) (header ADSSymbolUploadDataType) { /*{{{*/
+
+func decodeSymbolUploadDataType(data *bytes.Buffer, parent string) (header ADSSymbolUploadDataType) { 
 	type headerStruct struct {
 		LenTotal		uint32
 		In1				uint32
@@ -220,7 +221,6 @@ func decodeSymbolUploadDataType(data *bytes.Buffer, parent string) (header ADSSy
 		ArrayLevels		uint16
 		In8				uint16
 	}
-
 
 	var result headerStruct
 	header = ADSSymbolUploadDataType{}
@@ -308,8 +308,8 @@ func decodeSymbolUploadDataType(data *bytes.Buffer, parent string) (header ADSSy
 	}
 
 	return
-} /*}}}*/
-func makeArrayChilds(levels []arrayInfo, dt string, size uint32 ) (childs map[string]ADSSymbolUploadDataType) {/*{{{*/
+} 
+func makeArrayChilds(levels []arrayInfo, dt string, size uint32 ) (childs map[string]ADSSymbolUploadDataType) {
 	childs = map[string]ADSSymbolUploadDataType{}
 
 	if len(levels) < 1 {
@@ -339,10 +339,10 @@ func makeArrayChilds(levels []arrayInfo, dt string, size uint32 ) (childs map[st
 	}
 
 	return
-}/*}}}*/
+}
 
 // Add symbols to the list and read the data type
-func (conn *Connection) addSymbol(symbol ADSSymbolUploadSymbol) { /*{{{*/
+func (conn *Connection) addSymbol(symbol ADSSymbolUploadSymbol) { 
 	sym := ADSSymbol{}
 
 	sym.Self = &sym
@@ -364,8 +364,8 @@ func (conn *Connection) addSymbol(symbol ADSSymbolUploadSymbol) { /*{{{*/
 	conn.symbols[symbol.Name] = sym
 
 	return
-}                                                                                                                                          /*}}}*/
-func (data *ADSSymbolUploadDataType) addOffset(conn *Connection, parent string, area uint32, offset uint32) (childs map[string]ADSSymbol) { /*{{{*/
+}                                                                                                                                          
+func (data *ADSSymbolUploadDataType) addOffset(conn *Connection, parent string, area uint32, offset uint32) (childs map[string]ADSSymbol) { 
 	childs = map[string]ADSSymbol{}
 
 	var path string
@@ -404,23 +404,23 @@ func (data *ADSSymbolUploadDataType) addOffset(conn *Connection, parent string, 
 	}
 
 	return
-} /*}}}*/
+} 
 
 // Print the whole symbol and data type lists
-func (data *ADSSymbolUploadSymbol) DebugWalk() { /*{{{*/
+func (data *ADSSymbolUploadSymbol) DebugWalk() { 
 	log.Warn("DebugWalk (", data.Area, ":", data.Offset, "): ", data.Name, " - ", data.DataType, "[", data.Length, "] ", data.Comment)
 
 	for _, segment := range data.Childs {
 		segment.DebugWalk()
 	}
-}                                                  /*}}}*/
-func (data *ADSSymbolUploadDataType) DebugWalk() { /*{{{*/
+}                                                  
+func (data *ADSSymbolUploadDataType) DebugWalk() { 
 	log.Warn("TYPE (", data.Area, ":", data.Offset, "): ", data.Name, " [", data.In1, "|", data.In3, "|", data.In6, "|", data.In7, "]  ", data.DataType, "[", data.Size, "] ", data.Comment);
 
 	for _, segment := range data.Childs {
 		segment.DebugWalk()
 	}
-} /*}}}*/
+} 
 
 // Print the whole symbol and data type lists
 //func (data *ADSSymbolUploadSymbol) Walk() { [>{{{<]
@@ -430,7 +430,7 @@ func (data *ADSSymbolUploadDataType) DebugWalk() { /*{{{*/
 		//segment.Walk(data.Name)
 	//}
 //}                                                          [>}}}<]
-func (data *ADSSymbol) Walk() { /*{{{*/
+func (data *ADSSymbol) Walk() { 
 	if len(data.Childs) == 0 {
 		if !data.Valid {
 			log.Warn("TYPE (", data.Area, ":", data.Offset, "): ", data.FullName, " [", data.DataType, "|",data.Length,"] = INVALID:",data.Value)
@@ -443,7 +443,7 @@ func (data *ADSSymbol) Walk() { /*{{{*/
 			data.Childs[i].Self.Walk()
 		}
 	}
-} /*}}}*/
+} 
 
 //func (data *ADSSymbolUploadSymbol) FindChanged() (changed []*ADSSymbolUploadDataType) { [>{{{<]
 	//log.Info("FindChanged (", data.Area, ":", data.Offset, "): ", data.Name)
@@ -457,7 +457,7 @@ func (data *ADSSymbol) Walk() { /*{{{*/
 
     //return
 //}                                                          [>}}}<]
-func (data *ADSSymbol) FindChanged() (changed []*ADSSymbol) { /*{{{*/
+func (data *ADSSymbol) FindChanged() (changed []*ADSSymbol) { 
 
 	if len(data.Childs) == 0 {
         if data.Changed && data.Valid {
@@ -477,9 +477,9 @@ func (data *ADSSymbol) FindChanged() (changed []*ADSSymbol) { /*{{{*/
 	}
 
     return
-} /*}}}*/
+} 
 
-func (data *ADSSymbol) Find(name string) (list []*ADSSymbol) { /*{{{*/
+func (data *ADSSymbol) Find(name string) (list []*ADSSymbol) { 
 	if len(data.Childs) == 0 {
         if len(data.FullName)>=len(name)&&data.FullName[:len(name)]==name {
             list = append(list,data)
@@ -494,9 +494,9 @@ func (data *ADSSymbol) Find(name string) (list []*ADSSymbol) { /*{{{*/
 	}
 
     return
-} /*}}}*/
+} 
 
-func (symbol *ADSSymbol) AddDeviceNotification(callback func(*ADSSymbol)) { /*{{{*/
+func (symbol *ADSSymbol) AddDeviceNotification(callback func(*ADSSymbol)) { 
 	log.Info("AddDeviceNotification (", symbol.Area, ":", symbol.Offset, "): ", symbol.Name)
 
 	s := symbol
@@ -507,10 +507,10 @@ func (symbol *ADSSymbol) AddDeviceNotification(callback func(*ADSSymbol)) { /*{{
 		c(s)
 	});
 
-}                                                          /*}}}*/
+}                                                          
 
 // Read a symbol and all sub values
-func (symbol *ADSSymbol) Read() { /*{{{*/
+func (symbol *ADSSymbol) Read() { 
 	log.Debug("Read (", symbol.Area, ":", symbol.Offset, "): ", symbol.FullName)
 
 	res, _ := symbol.conn.Read(symbol.Area, symbol.Offset, symbol.Length)
@@ -520,8 +520,8 @@ func (symbol *ADSSymbol) Read() { /*{{{*/
 		segment.parse(symbol.Offset, res.Data)
 	}
 }
-/*}}}*/
-func (symbol *ADSSymbol) Write(value string) (error) { /*{{{*/
+
+func (symbol *ADSSymbol) Write(value string) (error) { 
 	log.Debug("Write (", symbol.Area, ":", symbol.Offset, "): ", symbol.FullName)
 
 	if len(symbol.Childs) != 0 {
@@ -624,15 +624,13 @@ func (symbol *ADSSymbol) Write(value string) (error) { /*{{{*/
 			return e
 		}
 
-
 	symbol.Self.conn.Write(symbol.Area, symbol.Offset, buf.Bytes())
 
 	return nil
 
 }
-/*}}}*/
 
-func (dt *ADSSymbol) parse(offset uint32, data []byte) { /*{{{*/
+func (dt *ADSSymbol) parse(offset uint32, data []byte) { 
 	start := dt.Offset - offset
 	stop := start + dt.Length
 
@@ -727,11 +725,13 @@ func (dt *ADSSymbol) parse(offset uint32, data []byte) { /*{{{*/
 		default:
 			newValue = "nil"
 		}
-		dt.Valid = true
-        if strcmp(dt.Value,newValue)!=0 {
+		fmt.Printf("[DEBUG] (parse symbols.go - newValue) %v", newValue)
+		fmt.Printf("[DEBUG] (parse symbols.go - dt.Value) %v", dt.Value)
+        if strcmp(dt.Value, newValue)!=0 {
 			dt.Value = newValue
 			dt.Changed = dt.Valid
-        }		
+        }
+		dt.Valid = true	
     }
 }
 func strcmp(a, b string) int {
@@ -748,8 +748,9 @@ func strcmp(a, b string) int {
 	}
 	return diff
 }
-/*}}}*/
+
 func (symbol *ADSSymbol) notification(data []byte) {
+	fmt.Printf("[DEBUG] (NOTIFICATION symbols.go) %v", symbol.Offset)
 	symbol.parse(symbol.Offset, data)
 }
 
