@@ -725,8 +725,8 @@ func (dt *ADSSymbol) parse(offset uint32, data []byte) {
 		default:
 			newValue = "nil"
 		}
-		fmt.Printf("[DEBUG] (parse symbols.go - newValue) %v", newValue)
-		fmt.Printf("[DEBUG] (parse symbols.go - dt.Value) %v", dt.Value)
+		fmt.Printf("[DEBUG] (parse symbols.go - newValue) %v\n", newValue)
+		fmt.Printf("[DEBUG] (parse symbols.go - dt.Value) %v\n", dt.Value)
         if strcmp(dt.Value, newValue)!=0 {
 			dt.Value = newValue
 			dt.Changed = dt.Valid
@@ -750,7 +750,7 @@ func strcmp(a, b string) int {
 }
 
 func (symbol *ADSSymbol) notification(data []byte) {
-	fmt.Printf("[DEBUG] (NOTIFICATION symbols.go) %v", symbol.Offset)
+	fmt.Printf("[DEBUG] (NOTIFICATION symbols.go) %v\n", symbol.Offset)
 	symbol.parse(symbol.Offset, data)
 }
 
