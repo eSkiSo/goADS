@@ -228,8 +228,8 @@ func decodeSymbolUploadDataType(data *bytes.Buffer, parent string) (header ADSSy
 	totalSize := data.Len()
 
 	if totalSize < 48 {
-		log.Error(parent," - Wrong size <48 byte");
-		log.Error(hex.Dump(data.Bytes()));
+		//log.Error(parent," - Wrong size <48 byte");
+		//log.Error(hex.Dump(data.Bytes()));
 	}
 
 	binary.Read(data, binary.LittleEndian, &result)
