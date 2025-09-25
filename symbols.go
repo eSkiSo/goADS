@@ -4,7 +4,7 @@ import (
 	log "github.com/cihub/seelog"
 
 	"bytes"
-	    //"encoding/hex"
+	    "encoding/hex"
 	"encoding/binary"
 	"fmt"
 	"math"
@@ -181,23 +181,23 @@ func (conn *Connection) UploadSymbolInfoDataTypes(length uint32) {
 		conn.datatypes = map[string]ADSSymbolUploadDataType{}
 	}
 
-	//l := buff.Len()
-	//var last = l
-	//log.Warn("Bytes: ", l)
+	l := buff.Len()
+	var last = l
+	log.Warn("Bytes: ", l)
 
 	for buff.Len() > 0 {
 		header := decodeSymbolUploadDataType(buff, "")
 		header.conn = conn
 
-		//log.Warn("ITEM (",(l-buff.Len()),"|",(last-buff.Len()),"): ",header.Name,"|",header.DataType,"|",header.Comment)
-		//last = buff.Len()
+		log.Warn("ITEM (",(l-buff.Len()),"|",(last-buff.Len()),"): ",header.Name,"|",header.DataType,"|",header.Comment)
+		last = buff.Len()
 
-		//header.Index = l - buff.Len()
-		//header.Size = last - buff.Len()
+		header.Index = l - buff.Len()
+		header.Size = last - buff.Len()
 
 		conn.datatypes[header.Name] = header
 	}
-	//   log.Warn(hex.Dump(header));
+	   log.Warn(hex.Dump(header));
 }                                                                                                     
 
 type arrayInfo struct {
@@ -228,8 +228,8 @@ func decodeSymbolUploadDataType(data *bytes.Buffer, parent string) (header ADSSy
 	totalSize := data.Len()
 
 	if totalSize < 48 {
-		//log.Error(parent," - Wrong size <48 byte");
-		//log.Error(hex.Dump(data.Bytes()));
+		log.Error(parent," - Wrong size <48 byte");
+		log.Error(hex.Dump(data.Bytes()));
 	}
 
 	binary.Read(data, binary.LittleEndian, &result)
@@ -725,8 +725,8 @@ func (dt *ADSSymbol) parse(offset uint32, data []byte) {
 		default:
 			newValue = "nil"
 		}
-		fmt.Printf("[DEBUG] (parse symbols.go - newValue) %v\n", newValue)
-		fmt.Printf("[DEBUG] (parse symbols.go - dt.Value) %v\n", dt.Value)
+		fmt.Printf("[DEBUG] (parse symbols.go - newValue) %v", newValue)
+		fmt.Printf("[DEBUG] (parse symbols.go - dt.Value) %v", dt.Value)
         if strcmp(dt.Value, newValue)!=0 {
 			dt.Value = newValue
 			dt.Changed = dt.Valid
@@ -750,7 +750,7 @@ func strcmp(a, b string) int {
 }
 
 func (symbol *ADSSymbol) notification(data []byte) {
-	fmt.Printf("[DEBUG] (NOTIFICATION symbols.go) %v\n", symbol.Offset)
+	fmt.Printf("[DEBUG] (NOTIFICATION symbols.go) %v", symbol.Offset)
 	symbol.parse(symbol.Offset, data)
 }
 
