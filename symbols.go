@@ -94,7 +94,6 @@ func (conn *Connection) UploadSymbolInfo() (symbols map[string]ADSSymbol, struct
 	binary.Read(buff, binary.LittleEndian, &result)
 
 	log.Debug("UploadSymbolInfo DataTypeLength: ", result.DataTypeLength)
-	log.Debug("UploadSymbolInfo SymbolLength: ", result.SymbolLength)
 
 	// Load and parse data types
 	conn.UploadSymbolInfoDataTypes(result.DataTypeLength)
@@ -161,6 +160,11 @@ func (conn *Connection) UploadSymbolInfoSymbols(length uint32) {
 				item.DataType = "STRING"
 			}
 		}
+		log.Debug("ADSSymbolUploadSymbol Name: ", item.Name)
+		log.Debug("ADSSymbolUploadSymbol DataType: ", item.DataType)
+		log.Debug("ADSSymbolUploadSymbol Area: ", item.Area)
+		log.Debug("ADSSymbolUploadSymbol Offset: ", item.Offset)
+		log.Debug("ADSSymbolUploadSymbol Length: ", item.Length)
 
 		conn.addSymbol(item)
 
@@ -267,7 +271,7 @@ func decodeSymbolUploadDataType(data *bytes.Buffer, parent string) (header ADSSy
 		}
 	}
 
-	log.Warn("ITEM ",header.Name,"|",header.DataType,"|",header.Comment, " array:",header.ArrayLevels," [",header.In1,"|",header.In3,"|",header.In6,"|",header.In7,"]")
+	//log.Warn("ITEM ",header.Name,"|",header.DataType,"|",header.Comment, " array:",header.ArrayLevels," [",header.In1,"|",header.In3,"|",header.In6,"|",header.In7,"]")
 
 	childLen := int(result.LenTotal) - (totalSize - data.Len())
 	if childLen <= 0 {
