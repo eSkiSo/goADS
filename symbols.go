@@ -93,16 +93,15 @@ func (conn *Connection) UploadSymbolInfo() (symbols map[string]ADSSymbol, struct
 	buff := bytes.NewBuffer(res.Data)
 	binary.Read(buff, binary.LittleEndian, &result)
 
-	log.Debug("UploadSymbolInfo DataTypeLength: ", result.DataTypeLength)
-
-	
-	// Load and parse symbols
-	conn.UploadSymbolInfoSymbols(result.SymbolLength)
+	//log.Debug("UploadSymbolInfo DataTypeLength: ", result.DataTypeLength)
 
 	// Load and parse data types
-	conn.UploadSymbolInfoDataTypes(result.DataTypeLength)
+	//conn.UploadSymbolInfoDataTypes(result.DataTypeLength)
+	conn.datatypes = map[string]ADSSymbolUploadDataType{}
 
-
+	// Load and parse symbols
+	conn.UploadSymbolInfoSymbols(result.SymbolLength)
+	
 	// Return the result
 	return conn.symbols, conn.datatypes
 }
