@@ -182,7 +182,7 @@ func (conn *Connection) UploadSymbolInfoDataTypes(length uint32) {
 	}
 
 	l := buff.Len()
-	//var last = l
+	var last = l
 	log.Warn("Bytes: ", l)
 
 	for buff.Len() > 0 {
@@ -190,7 +190,7 @@ func (conn *Connection) UploadSymbolInfoDataTypes(length uint32) {
 		header.conn = conn
 
 		log.Warn("ITEM (",(l-buff.Len()),"|",(last-buff.Len()),"): ",header.Name,"|",header.DataType,"|",header.Comment)
-		//last = buff.Len()
+		last = buff.Len()
 
 		//header.Index = l - buff.Len()
 		//header.Size = last - buff.Len()
