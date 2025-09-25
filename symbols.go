@@ -237,6 +237,8 @@ func decodeSymbolUploadDataType(data *bytes.Buffer, parent string) (header ADSSy
 
 	binary.Read(data, binary.LittleEndian, &result)
 
+	log.Info(result)
+
 	name := make([]byte, result.LenName)
 	dt := make([]byte, result.LenDataType)
 	comment := make([]byte, result.LenComment)
