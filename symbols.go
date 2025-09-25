@@ -95,11 +95,13 @@ func (conn *Connection) UploadSymbolInfo() (symbols map[string]ADSSymbol, struct
 
 	log.Debug("UploadSymbolInfo DataTypeLength: ", result.DataTypeLength)
 
+	
+	// Load and parse symbols
+	conn.UploadSymbolInfoSymbols(result.SymbolLength)
+
 	// Load and parse data types
 	conn.UploadSymbolInfoDataTypes(result.DataTypeLength)
 
-	// Load and parse symbols
-	conn.UploadSymbolInfoSymbols(result.SymbolLength)
 
 	// Return the result
 	return conn.symbols, conn.datatypes
