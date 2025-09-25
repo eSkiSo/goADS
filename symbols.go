@@ -232,12 +232,10 @@ func decodeSymbolUploadDataType(data *bytes.Buffer, parent string) (header ADSSy
 
 	if totalSize < 48 {
 		log.Error(parent," - Wrong size <48 byte: ", totalSize);
-		log.Error(hex.Dump(data.Bytes()));
+		//log.Error(hex.Dump(data.Bytes()));
 	}
 
 	binary.Read(data, binary.LittleEndian, &result)
-
-	log.Info(result)
 
 	name := make([]byte, result.LenName)
 	dt := make([]byte, result.LenDataType)
@@ -269,7 +267,7 @@ func decodeSymbolUploadDataType(data *bytes.Buffer, parent string) (header ADSSy
 		}
 	}
 
-	//log.Warn("ITEM ",header.Name,"|",header.DataType,"|",header.Comment, " array:",header.ArrayLevels," [",header.In1,"|",header.In3,"|",header.In6,"|",header.In7,"]")
+	log.Warn("ITEM ",header.Name,"|",header.DataType,"|",header.Comment, " array:",header.ArrayLevels," [",header.In1,"|",header.In3,"|",header.In6,"|",header.In7,"]")
 
 	childLen := int(result.LenTotal) - (totalSize - data.Len())
 	if childLen <= 0 {
