@@ -93,6 +93,9 @@ func (conn *Connection) UploadSymbolInfo() (symbols map[string]ADSSymbol, struct
 	buff := bytes.NewBuffer(res.Data)
 	binary.Read(buff, binary.LittleEndian, &result)
 
+	log.Debug("UploadSymbolInfo DataTypeLength: ", result.DataTypeLength)
+	log.Debug("UploadSymbolInfo SymbolLength: ", result.SymbolLength)
+
 	// Load and parse data types
 	conn.UploadSymbolInfoDataTypes(result.DataTypeLength)
 
@@ -181,23 +184,23 @@ func (conn *Connection) UploadSymbolInfoDataTypes(length uint32) {
 		conn.datatypes = map[string]ADSSymbolUploadDataType{}
 	}
 
-	l := buff.Len()
-	var last = l
-	log.Warn("Bytes: ", l)
+	//l := buff.Len()
+	//var last = l
+	//log.Warn("Bytes: ", l)
 
 	for buff.Len() > 0 {
 		header := decodeSymbolUploadDataType(buff, "")
 		header.conn = conn
 
-		log.Warn("ITEM (",(l-buff.Len()),"|",(last-buff.Len()),"): ",header.Name,"|",header.DataType,"|",header.Comment)
-		last = buff.Len()
+		//log.Warn("ITEM (",(l-buff.Len()),"|",(last-buff.Len()),"): ",header.Name,"|",header.DataType,"|",header.Comment)
+		//last = buff.Len()
 
 		//header.Index = l - buff.Len()
 		//header.Size = last - buff.Len()
 
 		conn.datatypes[header.Name] = header
 	}
-	   //log.Warn(hex.Dump(header));
+	//   log.Warn(hex.Dump(header));
 }                                                                                                     
 
 type arrayInfo struct {
