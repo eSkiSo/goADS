@@ -161,11 +161,7 @@ func (conn *Connection) UploadSymbolInfoSymbols(length uint32) {
 				item.DataType = "STRING"
 			}
 		}
-		log.Debug("ADSSymbolUploadSymbol Name: ", item.Name)
-		log.Debug("ADSSymbolUploadSymbol DataType: ", item.DataType)
-		log.Debug("ADSSymbolUploadSymbol Area: ", item.Area)
-		log.Debug("ADSSymbolUploadSymbol Offset: ", item.Offset)
-		log.Debug("ADSSymbolUploadSymbol Length: ", item.Length)
+		log.Debug("UploadSymbolInfoSymbols\nName: ", item.Name, " DataType: ", item.DataType, " Area: ", item.Area, " Offset: ", item.Offset, " Length: ", item.Length)
 
 		conn.addSymbol(item)
 
