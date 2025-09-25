@@ -4,7 +4,7 @@ import (
 	log "github.com/cihub/seelog"
 
 	"bytes"
-	    "encoding/hex"
+	    //"encoding/hex"
 	"encoding/binary"
 	"fmt"
 	"math"
